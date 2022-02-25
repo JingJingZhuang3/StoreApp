@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace StoreApp.DataInfrastructure
 {
@@ -37,6 +38,16 @@ namespace StoreApp.DataInfrastructure
                 await _context.SaveChangesAsync();
                 return GetCustomer(firstname,lastname)!;
             }
+        }
+
+        public IEnumerable<Location> GetLocation()
+        {
+            return _context.Locations.ToList();
+        }
+
+        public IEnumerable<StoreInventory> GetStoreProducts(int id)
+        {
+            return _context.StoreInventories.Where(store => store.LocationId == id).ToList();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using StoreApp.API.Dtos;
 using StoreApp.DataInfrastructure;
+using System.ComponentModel.DataAnnotations;
 
 namespace StoreApp.API.Controllers
 {
@@ -17,10 +18,21 @@ namespace StoreApp.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Customer>> CreateAccount([FromBody] CustomerName customerName)
+        public async Task<ActionResult<Customer>> CreateAccount([FromBody, Required] CustomerName customerName)
         {
             Customer customer = await _repository.AddNewCustomerAsync(customerName.firstName!, customerName.lastName!);
    
+            return customer;
+        }
+
+        [HttpGet]
+        public ActionResult<Customer> GetAccount([FromQuery, Required] string firstname, [Required]string lastname)
+        {
+            var customer = _repository.GetCustomer(firstname, lastname);
+            if(customer == null)
+            {
+                return StatusCode(404);
+            }
             return customer;
         }
     }
